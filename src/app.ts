@@ -13,6 +13,8 @@ import compression from "compression";
 import { useRequestLoggingMiddleware } from "./middleware/logger.ts";
 import routes from "./routes";
 import { getLogger } from "./tools/logging";
+import { HTTP_METHODS, ALLOWED_REQUEST_HEADERS, EXPOSED_RESPONSE_HEADERS } from "./constants/http";
+import { formatErrorForLogging } from "./tools/error-formatter";
 
 const logger = getLogger("app");
 
@@ -39,9 +41,9 @@ export function createApp(): Express {
     cors({
       origin: process.env.CORS_ORIGIN || "*", // 生产环境应指定具体域名
       credentials: true,
-      methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-      allowedHeaders: ["Content-Type", "Authorization", "X-Request-Id", "X-Trace-Id", "X-Device-Id"],
-      exposedHeaders: ["X-Request-Id", "X-Trace-Id", "X-Response-Time", "Server-Timing"],
+      methods: HTTP_METHODS as unknown as string[],
+      allowedHeaders: ALLOWED_REQUEST_HEADERS as unknown as string[],
+      exposedHeaders: EXPOSED_RESPONSE_HEADERS as unknown as string[],
       maxAge: 86400, // 24小时
     })
   );
@@ -158,11 +160,7 @@ export function createApp(): Express {
   app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     // 记录错误
     logger.error("Unhandled error", {
-      error: {
-        name: err.name,
-        message: err.message,
-        stack: err.stack,
-      },
+      error: formatErrorForLogging(err),
       path: req.path,
       method: req.method,
     });

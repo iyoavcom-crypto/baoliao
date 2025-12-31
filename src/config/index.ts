@@ -12,6 +12,16 @@ import * as sqlite from "./sql/sqlite";
 
 export { env };
 
+// 重新导出 db-manager 中的函数，提供统一接口
+export {
+  resetDatabaseIfNeeded,
+  resetSQLiteFiles,
+  initializeDatabase,
+  closeDatabaseConnection,
+  loadSeedData,
+  type DatabaseInitOptions,
+} from "./db-manager";
+
 /**
  * Sequelize 实例 - 根据环境变量选择 MySQL 或 SQLite
  */
@@ -24,6 +34,7 @@ export const sequelize = env.DB_DIALECT === "mysql" ? mysql.sequelize : sqlite.s
  * @param {boolean} options.sync - 是否同步模型到数据库
  * @param {boolean} [options.force] - 是否强制重建表(会删除现有数据)
  * @param {boolean} [options.alter] - 是否自动修改表结构以匹配模型
+ * @deprecated 使用 initializeDatabase 替代
  */
 export async function initDatabase(options: { sync: boolean; force?: boolean; alter?: boolean }): Promise<void> {
   if (env.DB_DIALECT === "mysql") {
@@ -37,6 +48,7 @@ export async function initDatabase(options: { sync: boolean; force?: boolean; al
  * @function initDatabaseAsync
  * @description 异步初始化数据库连接(别名)
  * @param {Object} options - 初始化选项
+ * @deprecated 使用 initializeDatabase 替代
  */
 export async function initDatabaseAsync(options: { sync: boolean; force?: boolean; alter?: boolean }): Promise<void> {
   return initDatabase(options);

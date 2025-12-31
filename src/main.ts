@@ -9,11 +9,17 @@
 import "dotenv/config";
 import { createServer } from "http";
 import { createApp } from "./app";
-import { initDatabaseAsync, sequelize, env } from "./config";
+import { sequelize, env } from "./config";
 import { getLogger, setGlobalLogLevel } from "./tools/logging";
 import type { LogLevel } from "./tools/logging";
-import { existsSync, unlinkSync } from "node:fs";
 import { WsServer } from "./routes/ws";
+import { formatErrorForLogging } from "./tools/error-formatter";
+import {
+  resetDatabaseIfNeeded,
+  initializeDatabase,
+  closeDatabaseConnection,
+  loadSeedData,
+} from "./config/db-manager";
 
 const logger = getLogger("main");
 
@@ -36,22 +42,11 @@ async function main(): Promise<void> {
     });
 
     // 如果启用了DB_RESET，删除数据库文件
-    if (env.DB_RESET && env.DB_DIALECT === "sqlite") {
-      const dbPath = env.DB_STORAGE;
-      if (existsSync(dbPath)) {
-        logger.warn(`Deleting database file: ${dbPath}`);
-        unlinkSync(dbPath);
-        const walPath = `${dbPath}-wal`;
-        const shmPath = `${dbPath}-shm`;
-        if (existsSync(walPath)) unlinkSync(walPath);
-        if (existsSync(shmPath)) unlinkSync(shmPath);
-        logger.info("Database deleted successfully");
-      }
-    }
+    resetDatabaseIfNeeded();
 
     // 初始化数据库连接
     logger.info("Initializing database connection...");
-    await initDatabaseAsync({
+    await initializeDatabase({
       sync: true,
       force: env.DB_RESET, // 如果DB_RESET=true，强制重建表
       alter: !env.DB_RESET && process.env.NODE_ENV === "development", // 重置时不使用alter
@@ -59,17 +54,7 @@ async function main(): Promise<void> {
     logger.info("Database initialized successfully");
 
     // 如果启用了DB_SEED，加载种子数据
-    if (env.DB_SEED) {
-      logger.info("Loading seed data...");
-      try {
-        const { loadAllSeeds } = await import("../data/seeds/loader.js");
-        await loadAllSeeds();
-        logger.info("Seed data loaded successfully");
-      } catch (error) {
-        logger.error("Failed to load seed data", { error });
-        throw error;
-      }
-    }
+    await loadSeedData();
 
     // 创建 Express 应用
     const app = createApp();
@@ -118,8 +103,7 @@ async function main(): Promise<void> {
           logger.info("WebSocket server closed");
 
           // 关闭数据库连接
-          await sequelize.close();
-          logger.info("Database connection closed");
+          await closeDatabaseConnection(sequelize);
 
           logger.info("Graceful shutdown completed");
           process.exit(0);
@@ -143,33 +127,23 @@ async function main(): Promise<void> {
     // 未捕获异常处理
     process.on("uncaughtException", (error: Error) => {
       logger.fatal("Uncaught exception", {
-        error: {
-          name: error.name,
-          message: error.message,
-          stack: error.stack,
-        },
+        error: formatErrorForLogging(error),
       });
       process.exit(1);
     });
 
     process.on("unhandledRejection", (reason: any) => {
       logger.fatal("Unhandled rejection", {
-        reason: reason instanceof Error ? {
-          name: reason.name,
-          message: reason.message,
-          stack: reason.stack,
-        } : reason,
+        reason: reason instanceof Error
+          ? formatErrorForLogging(reason)
+          : reason,
       });
       process.exit(1);
     });
 
   } catch (error) {
     logger.fatal("Failed to start application", {
-      error: error instanceof Error ? {
-        name: error.name,
-        message: error.message,
-        stack: error.stack,
-      } : error,
+      error: formatErrorForLogging(error),
     });
     process.exit(1);
   }
