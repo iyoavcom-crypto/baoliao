@@ -1,0 +1,159 @@
+[
+  {
+    "id": "role.list",
+    "method": "GET",
+    "models": ["Role"],
+    "paths": ["/api/roles"],
+    "roles": ["admin", "user"],
+    "operateEnum": "eq",
+    "dto": ["RoleListDto"],
+    "authRequired": true,
+    "description": "获取角色列表（支持分页、搜索、过滤）",
+    "cache": {
+      "enabled": true,
+      "ttl": 300,
+      "keyFields": ["path", "page", "limit", "keyword"]
+    }
+  },
+  {
+    "id": "role.detail",
+    "method": "GET",
+    "models": ["Role"],
+    "paths": ["/api/roles/:id"],
+    "roles": ["admin", "user"],
+    "operateEnum": "eq",
+    "dto": ["RoleDetailDto"],
+    "authRequired": true,
+    "description": "获取角色详情",
+    "cache": {
+      "enabled": true,
+      "ttl": 300,
+      "keyFields": ["path"]
+    }
+  },
+  {
+    "id": "role.create",
+    "method": "POST",
+    "models": ["Role"],
+    "paths": ["/api/roles"],
+    "roles": ["admin"],
+    "operateEnum": "eq",
+    "dto": ["RoleCreatableDto", "RoleDetailDto"],
+    "authRequired": true,
+    "description": "创建新角色（仅管理员）"
+  },
+  {
+    "id": "role.update",
+    "method": "PUT",
+    "models": ["Role"],
+    "paths": ["/api/roles/:id"],
+    "roles": ["admin"],
+    "operateEnum": "eq",
+    "dto": ["RoleUpdatableDto", "RoleDetailDto"],
+    "authRequired": true,
+    "description": "更新角色信息（仅管理员）"
+  },
+  {
+    "id": "role.delete",
+    "method": "DELETE",
+    "models": ["Role"],
+    "paths": ["/api/roles/:id"],
+    "roles": ["admin"],
+    "operateEnum": "eq",
+    "dto": [],
+    "authRequired": true,
+    "description": "删除角色（仅管理员）"
+  },
+  {
+    "id": "role.search",
+    "method": "POST",
+    "models": ["Role"],
+    "paths": ["/api/roles/search"],
+    "roles": ["admin", "user"],
+    "operateEnum": "eq",
+    "dto": ["RoleListDto"],
+    "authRequired": true,
+    "description": "搜索角色（支持关键词搜索）"
+  },
+  {
+    "id": "role.byGroup",
+    "method": "GET",
+    "models": ["Role"],
+    "paths": ["/api/roles/group/:group"],
+    "roles": ["admin", "user"],
+    "operateEnum": "eq",
+    "dto": ["RoleListDto"],
+    "authRequired": true,
+    "description": "根据角色分组获取角色列表",
+    "cache": {
+      "enabled": true,
+      "ttl": 300,
+      "keyFields": ["path"]
+    }
+  },
+  {
+    "id": "role.assignToUser",
+    "method": "POST",
+    "models": ["Role", "User"],
+    "paths": ["/api/roles/:roleId/assign/:userId"],
+    "roles": ["admin"],
+    "operateEnum": "eq",
+    "dto": [],
+    "authRequired": true,
+    "description": "将角色分配给用户（仅管理员）"
+  },
+  {
+    "id": "role.removeFromUser",
+    "method": "DELETE",
+    "models": ["Role", "User"],
+    "paths": ["/api/roles/:roleId/assign/:userId"],
+    "roles": ["admin"],
+    "operateEnum": "eq",
+    "dto": [],
+    "authRequired": true,
+    "description": "移除用户的角色（仅管理员）"
+  },
+  {
+    "id": "role.usersByRole",
+    "method": "GET",
+    "models": ["Role", "User"],
+    "paths": ["/api/roles/:roleId/users"],
+    "roles": ["admin"],
+    "operateEnum": "eq",
+    "dto": ["UserListDto"],
+    "authRequired": true,
+    "description": "获取拥有特定角色的用户列表（仅管理员）",
+    "cache": {
+      "enabled": true,
+      "ttl": 60,
+      "keyFields": ["path", "page", "limit"]
+    }
+  },
+  {
+    "id": "role.statistics",
+    "method": "GET",
+    "models": ["Role"],
+    "paths": ["/api/roles/statistics"],
+    "roles": ["admin"],
+    "operateEnum": "eq",
+    "dto": [],
+    "authRequired": true,
+    "description": "获取角色统计信息（仅管理员）",
+    "cache": {
+      "enabled": true,
+      "ttl": 300,
+      "keyFields": ["path"]
+    }
+  },
+  {
+    "id": "role.validate",
+    "method": "POST",
+    "models": ["Role"],
+    "paths": ["/api/roles/validate"],
+    "roles": ["admin", "user"],
+    "operateEnum": "eq",
+    "dto": [],
+    "authRequired": true,
+    "description": "验证角色ID是否存在且有效"
+  }
+]

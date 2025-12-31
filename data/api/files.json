@@ -1,0 +1,76 @@
+[
+  {
+    "id": "file.upload",
+    "method": "POST",
+    "models": ["File"],
+    "paths": ["/api/files/upload"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["FileUploadDto", "FileUploadResponseDto"],
+    "authRequired": true,
+    "description": "上传文件"
+  },
+  {
+    "id": "file.list",
+    "method": "GET",
+    "models": ["File"],
+    "paths": ["/api/files"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["FileListDto"],
+    "fields": ["id", "filename", "mimeType", "size", "hash", "createdAt"],
+    "authRequired": true,
+    "allowedSortFields": ["createdAt", "size"],
+    "defaultSortField": "createdAt",
+    "description": "获取文件列表"
+  },
+  {
+    "id": "file.detail",
+    "method": "GET",
+    "models": ["File"],
+    "paths": ["/api/files/:id"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["FileDetailDto"],
+    "authRequired": true,
+    "description": "获取文件详情",
+    "cache": {
+      "enabled": true,
+      "ttl": 600,
+      "keyFields": ["path", "id"]
+    }
+  },
+  {
+    "id": "file.download",
+    "method": "GET",
+    "models": ["File"],
+    "paths": ["/api/files/:id/download"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": [],
+    "authRequired": true,
+    "description": "下载文件"
+  },
+  {
+    "id": "file.delete",
+    "method": "DELETE",
+    "models": ["File"],
+    "paths": ["/api/files/:id"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": [],
+    "authRequired": true,
+    "description": "删除文件"
+  },
+  {
+    "id": "file.token.create",
+    "method": "POST",
+    "models": ["FileToken"],
+    "paths": ["/api/files/:id/token"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["FileTokenCreatableDto", "FileTokenDetailDto"],
+    "authRequired": true,
+    "description": "创建文件访问令牌（用于分享）"
+  }
+]

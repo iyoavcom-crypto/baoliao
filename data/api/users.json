@@ -1,0 +1,93 @@
+[
+  {
+    "id": "user.list",
+    "method": "GET",
+    "models": ["User"],
+    "paths": ["/api/users"],
+    "roles": ["admin", "user"],
+    "operateEnum": "eq",
+    "dto": ["UserListDto", "UserListQueryDto"],
+    "fields": ["id", "name", "phone", "avatar", "state", "vip", "createdAt"],
+    "authRequired": true,
+    "allowedSortFields": ["createdAt", "name", "lastOnlineAt"],
+    "defaultSortField": "createdAt",
+    "description": "获取用户列表（支持分页、搜索、过滤）",
+    "cache": {
+      "enabled": true,
+      "ttl": 60,
+      "keyFields": ["path", "page", "limit", "keyword"]
+    }
+  },
+  {
+    "id": "user.detail",
+    "method": "GET",
+    "models": ["User"],
+    "paths": ["/api/users/:id"],
+    "roles": ["admin", "user"],
+    "operateEnum": "eq",
+    "dto": ["UserDetailDto"],
+    "fields": ["id", "name", "phone", "avatar", "state", "vip", "roleId", "createdAt", "updatedAt", "lastOnlineAt"],
+    "authRequired": true,
+    "description": "获取用户详情",
+    "cache": {
+      "enabled": true,
+      "ttl": 300,
+      "keyFields": ["path", "id"]
+    }
+  },
+  {
+    "id": "user.create",
+    "method": "POST",
+    "models": ["User"],
+    "paths": ["/api/users"],
+    "roles": ["admin"],
+    "operateEnum": "eq",
+    "dto": ["UserCreatableDto", "UserDetailDto"],
+    "authRequired": true,
+    "description": "创建新用户（仅管理员）"
+  },
+  {
+    "id": "user.update",
+    "method": "PUT",
+    "models": ["User"],
+    "paths": ["/api/users/:id"],
+    "roles": ["admin", "user"],
+    "operateEnum": "eq",
+    "dto": ["UserUpdatableDto", "UserDetailDto"],
+    "authRequired": true,
+    "description": "更新用户信息"
+  },
+  {
+    "id": "user.delete",
+    "method": "DELETE",
+    "models": ["User"],
+    "paths": ["/api/users/:id"],
+    "roles": ["admin"],
+    "operateEnum": "eq",
+    "dto": [],
+    "authRequired": true,
+    "description": "删除用户（仅管理员）"
+  },
+  {
+    "id": "user.search",
+    "method": "POST",
+    "models": ["User"],
+    "paths": ["/api/users/search"],
+    "roles": ["admin", "user"],
+    "operateEnum": "eq",
+    "dto": ["UserSearchRequestDto", "UserSearchResponseDto"],
+    "authRequired": true,
+    "description": "搜索用户"
+  },
+  {
+    "id": "user.profile",
+    "method": "GET",
+    "models": ["User"],
+    "paths": ["/api/users/me"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["UserDetailDto"],
+    "authRequired": true,
+    "description": "获取当前登录用户信息"
+  }
+]

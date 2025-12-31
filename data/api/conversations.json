@@ -1,0 +1,120 @@
+[
+  {
+    "id": "conversation.list",
+    "method": "GET",
+    "models": ["Conversation"],
+    "paths": ["/api/conversations"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["ConversationListDto", "ConversationListRequestDto"],
+    "fields": ["id", "kind", "targetId", "lastMessageId", "unreadCount", "pinnedAt", "mutedUntil", "createdAt", "updatedAt"],
+    "authRequired": true,
+    "allowedSortFields": ["updatedAt", "createdAt"],
+    "defaultSortField": "updatedAt",
+    "description": "获取会话列表",
+    "cache": {
+      "enabled": true,
+      "ttl": 30,
+      "keyFields": ["path", "userId"]
+    }
+  },
+  {
+    "id": "conversation.detail",
+    "method": "GET",
+    "models": ["Conversation"],
+    "paths": ["/api/conversations/:id"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["ConversationDetailDto"],
+    "authRequired": true,
+    "description": "获取会话详情"
+  },
+  {
+    "id": "conversation.create",
+    "method": "POST",
+    "models": ["Conversation"],
+    "paths": ["/api/conversations"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["ConversationCreatableDto", "ConversationDetailDto"],
+    "authRequired": true,
+    "description": "创建会话"
+  },
+  {
+    "id": "conversation.update",
+    "method": "PUT",
+    "models": ["Conversation"],
+    "paths": ["/api/conversations/:id"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["ConversationUpdatableDto", "ConversationDetailDto"],
+    "authRequired": true,
+    "description": "更新会话信息"
+  },
+  {
+    "id": "conversation.delete",
+    "method": "DELETE",
+    "models": ["Conversation"],
+    "paths": ["/api/conversations/:id"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": [],
+    "authRequired": true,
+    "description": "删除会话"
+  },
+  {
+    "id": "conversation.pin",
+    "method": "POST",
+    "models": ["Conversation"],
+    "paths": ["/api/conversations/:id/pin"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["ConversationPinDto"],
+    "authRequired": true,
+    "description": "置顶会话"
+  },
+  {
+    "id": "conversation.unpin",
+    "method": "DELETE",
+    "models": ["Conversation"],
+    "paths": ["/api/conversations/:id/pin"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": [],
+    "authRequired": true,
+    "description": "取消置顶会话"
+  },
+  {
+    "id": "conversation.mute",
+    "method": "POST",
+    "models": ["Conversation"],
+    "paths": ["/api/conversations/:id/mute"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["ConversationMuteDto"],
+    "authRequired": true,
+    "description": "免打扰会话"
+  },
+  {
+    "id": "conversation.unmute",
+    "method": "DELETE",
+    "models": ["Conversation"],
+    "paths": ["/api/conversations/:id/mute"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": [],
+    "authRequired": true,
+    "description": "取消免打扰"
+  },
+  {
+    "id": "conversation.clear",
+    "method": "POST",
+    "models": ["Conversation"],
+    "paths": ["/api/conversations/:id/clear"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["ConversationClearDto"],
+    "authRequired": true,
+    "description": "清空会话消息"
+  }
+]

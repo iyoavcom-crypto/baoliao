@@ -1,0 +1,58 @@
+[
+  {
+    "id": "user-list",
+    "method": "GET",
+    "paths": ["/users"],
+    "models": ["User"],
+    "roles": ["admin", "user"],
+    "operateEnum": "list",
+    "dto": ["UserListDTO"],
+    "authRequired": true,
+    "fields": ["id", "phone", "vip", "createdAt"],
+    "description": "获取用户列表(分页)"
+  },
+  {
+    "id": "user-detail",
+    "method": "GET",
+    "paths": ["/users/:id"],
+    "models": ["User"],
+    "roles": ["admin", "user"],
+    "operateEnum": "getById",
+    "dto": ["UserDetailDTO"],
+    "authRequired": true,
+    "description": "获取用户详情"
+  },
+  {
+    "id": "user-create",
+    "method": "POST",
+    "paths": ["/users"],
+    "models": ["User"],
+    "roles": ["admin"],
+    "operateEnum": "create",
+    "dto": ["UserCreateDTO"],
+    "authRequired": true,
+    "description": "创建新用户"
+  },
+  {
+    "id": "user-update",
+    "method": "PUT",
+    "paths": ["/users/:id"],
+    "models": ["User"],
+    "roles": ["admin", "user"],
+    "operateEnum": "update",
+    "dto": ["UserUpdateDTO"],
+    "authRequired": true,
+    "description": "更新用户信息"
+  },
+  {
+    "id": "user-delete",
+    "method": "DELETE",
+    "paths": ["/users/:id"],
+    "models": ["User"],
+    "roles": ["admin"],
+    "operateEnum": "delete",
+    "dto": [],
+    "authRequired": true,
+    "description": "删除用户"
+  }
+]

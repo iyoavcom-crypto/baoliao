@@ -1,0 +1,62 @@
+[
+  {
+    "id": "admin",
+    "name": "管理员",
+    "group": "system"
+  },
+  {
+    "id": "moderator",
+    "name": "版主",
+    "group": "system"
+  },
+  {
+    "id": "user",
+    "name": "普通用户",
+    "group": "user"
+  },
+  {
+    "id": "vip",
+    "name": "VIP用户",
+    "group": "user"
+  },
+  {
+    "id": "guest",
+    "name": "访客",
+    "group": "user"
+  },
+  {
+    "id": "project_owner",
+    "name": "项目所有者",
+    "group": "project"
+  },
+  {
+    "id": "project_admin",
+    "name": "项目管理员",
+    "group": "project"
+  },
+  {
+    "id": "project_member",
+    "name": "项目成员",
+    "group": "project"
+  },
+  {
+    "id": "developer",
+    "name": "开发者",
+    "group": "project"
+  },
+  {
+    "id": "tester",
+    "name": "测试人员",
+    "group": "project"
+  },
+  {
+    "id": "customer_service",
+    "name": "客服",
+    "group": "system"
+  },
+  {
+    "id": "content_reviewer",
+    "name": "内容审核员",
+    "group": "system"
+  }
+]

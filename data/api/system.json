@@ -1,0 +1,198 @@
+[
+  {
+    "id": "file.ref.list",
+    "method": "GET",
+    "models": ["FileRef"],
+    "paths": ["/api/files/:fileId/refs"],
+    "roles": ["admin"],
+    "operateEnum": "eq",
+    "dto": ["FileRefListDto"],
+    "authRequired": true,
+    "description": "获取文件引用列表"
+  },
+  {
+    "id": "file.ref.detail",
+    "method": "GET",
+    "models": ["FileRef"],
+    "paths": ["/api/files/:fileId/refs/:id"],
+    "roles": ["admin"],
+    "operateEnum": "eq",
+    "dto": ["FileRefDetailDto"],
+    "authRequired": true,
+    "description": "获取文件引用详情"
+  },
+  {
+    "id": "file.ref.create",
+    "method": "POST",
+    "models": ["FileRef"],
+    "paths": ["/api/files/:fileId/refs"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["FileRefCreatableDto", "FileRefDetailDto"],
+    "authRequired": true,
+    "description": "创建文件引用"
+  },
+  {
+    "id": "ws.connection.list",
+    "method": "GET",
+    "models": ["WsConnection"],
+    "paths": ["/api/ws/connections"],
+    "roles": ["admin"],
+    "operateEnum": "eq",
+    "dto": ["WsConnectionListDto"],
+    "authRequired": true,
+    "description": "获取WebSocket连接列表",
+    "cache": {
+      "enabled": true,
+      "ttl": 10,
+      "keyFields": ["path", "page", "limit"]
+    }
+  },
+  {
+    "id": "ws.connection.detail",
+    "method": "GET",
+    "models": ["WsConnection"],
+    "paths": ["/api/ws/connections/:id"],
+    "roles": ["admin"],
+    "operateEnum": "eq",
+    "dto": ["WsConnectionDetailDto"],
+    "authRequired": true,
+    "description": "获取连接详情"
+  },
+  {
+    "id": "feature.definition.list",
+    "method": "GET",
+    "models": ["FeatureDefinition"],
+    "paths": ["/api/system/features/definitions"],
+    "roles": ["admin"],
+    "operateEnum": "eq",
+    "dto": ["FeatureDefinitionListDto"],
+    "authRequired": true,
+    "description": "获取功能定义列表",
+    "cache": {
+      "enabled": true,
+      "ttl": 300,
+      "keyFields": ["path", "page", "limit"]
+    }
+  },
+  {
+    "id": "feature.definition.detail",
+    "method": "GET",
+    "models": ["FeatureDefinition"],
+    "paths": ["/api/system/features/definitions/:id"],
+    "roles": ["admin"],
+    "operateEnum": "eq",
+    "dto": ["FeatureDefinitionDetailDto"],
+    "authRequired": true,
+    "description": "获取功能定义详情"
+  },
+  {
+    "id": "feature.definition.create",
+    "method": "POST",
+    "models": ["FeatureDefinition"],
+    "paths": ["/api/system/features/definitions"],
+    "roles": ["admin"],
+    "operateEnum": "eq",
+    "dto": ["FeatureDefinitionCreatableDto", "FeatureDefinitionDetailDto"],
+    "authRequired": true,
+    "description": "创建功能定义"
+  },
+  {
+    "id": "feature.definition.update",
+    "method": "PUT",
+    "models": ["FeatureDefinition"],
+    "paths": ["/api/system/features/definitions/:id"],
+    "roles": ["admin"],
+    "operateEnum": "eq",
+    "dto": ["FeatureDefinitionUpdatableDto", "FeatureDefinitionDetailDto"],
+    "authRequired": true,
+    "description": "更新功能定义"
+  },
+  {
+    "id": "feature.policy.list",
+    "method": "GET",
+    "models": ["FeaturePolicy"],
+    "paths": ["/api/system/features/policies"],
+    "roles": ["admin"],
+    "operateEnum": "eq",
+    "dto": ["FeaturePolicyListDto"],
+    "authRequired": true,
+    "description": "获取功能策略列表",
+    "cache": {
+      "enabled": true,
+      "ttl": 300,
+      "keyFields": ["path", "page", "limit"]
+    }
+  },
+  {
+    "id": "feature.policy.detail",
+    "method": "GET",
+    "models": ["FeaturePolicy"],
+    "paths": ["/api/system/features/policies/:id"],
+    "roles": ["admin"],
+    "operateEnum": "eq",
+    "dto": ["FeaturePolicyDetailDto"],
+    "authRequired": true,
+    "description": "获取功能策略详情"
+  },
+  {
+    "id": "feature.policy.create",
+    "method": "POST",
+    "models": ["FeaturePolicy"],
+    "paths": ["/api/system/features/policies"],
+    "roles": ["admin"],
+    "operateEnum": "eq",
+    "dto": ["FeaturePolicyCreatableDto", "FeaturePolicyDetailDto"],
+    "authRequired": true,
+    "description": "创建功能策略"
+  },
+  {
+    "id": "feature.policy.update",
+    "method": "PUT",
+    "models": ["FeaturePolicy"],
+    "paths": ["/api/system/features/policies/:id"],
+    "roles": ["admin"],
+    "operateEnum": "eq",
+    "dto": ["FeaturePolicyUpdatableDto", "FeaturePolicyDetailDto"],
+    "authRequired": true,
+    "description": "更新功能策略"
+  },
+  {
+    "id": "feature.audit.list",
+    "method": "GET",
+    "models": ["FeatureAuditLog"],
+    "paths": ["/api/system/features/audit-logs"],
+    "roles": ["admin"],
+    "operateEnum": "eq",
+    "dto": ["FeatureAuditLogListDto"],
+    "authRequired": true,
+    "description": "获取功能审计日志",
+    "cache": {
+      "enabled": true,
+      "ttl": 60,
+      "keyFields": ["path", "page", "limit"]
+    }
+  },
+  {
+    "id": "feature.audit.detail",
+    "method": "GET",
+    "models": ["FeatureAuditLog"],
+    "paths": ["/api/system/features/audit-logs/:id"],
+    "roles": ["admin"],
+    "operateEnum": "eq",
+    "dto": ["FeatureAuditLogDetailDto"],
+    "authRequired": true,
+    "description": "获取审计日志详情"
+  },
+  {
+    "id": "feature.audit.create",
+    "method": "POST",
+    "models": ["FeatureAuditLog"],
+    "paths": ["/api/system/features/audit-logs"],
+    "roles": ["admin"],
+    "operateEnum": "eq",
+    "dto": ["FeatureAuditLogCreatableDto", "FeatureAuditLogDetailDto"],
+    "authRequired": true,
+    "description": "创建审计日志"
+  }
+]

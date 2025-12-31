@@ -1,0 +1,147 @@
+[
+  {
+    "id": "group.list",
+    "method": "GET",
+    "models": ["Group"],
+    "paths": ["/api/groups"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["GroupListDto", "GroupListQueryDto"],
+    "fields": ["id", "name", "avatarUrl", "description", "status", "capacity", "createdAt"],
+    "authRequired": true,
+    "allowedSortFields": ["createdAt", "name"],
+    "defaultSortField": "createdAt",
+    "description": "获取群组列表"
+  },
+  {
+    "id": "group.detail",
+    "method": "GET",
+    "models": ["Group"],
+    "paths": ["/api/groups/:id"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["GroupDetailDto"],
+    "authRequired": true,
+    "description": "获取群组详情",
+    "cache": {
+      "enabled": true,
+      "ttl": 300,
+      "keyFields": ["path", "id"]
+    }
+  },
+  {
+    "id": "group.create",
+    "method": "POST",
+    "models": ["Group"],
+    "paths": ["/api/groups"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["GroupCreatableDto", "GroupDetailDto"],
+    "authRequired": true,
+    "description": "创建群组"
+  },
+  {
+    "id": "group.update",
+    "method": "PUT",
+    "models": ["Group"],
+    "paths": ["/api/groups/:id"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["GroupUpdatableDto", "GroupDetailDto"],
+    "authRequired": true,
+    "description": "更新群组信息"
+  },
+  {
+    "id": "group.delete",
+    "method": "DELETE",
+    "models": ["Group"],
+    "paths": ["/api/groups/:id"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": [],
+    "authRequired": true,
+    "description": "解散群组"
+  },
+  {
+    "id": "group.members.list",
+    "method": "GET",
+    "models": ["GroupMember"],
+    "paths": ["/api/groups/:id/members"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["GroupMemberListDto"],
+    "authRequired": true,
+    "description": "获取群成员列表",
+    "cache": {
+      "enabled": true,
+      "ttl": 60,
+      "keyFields": ["path", "id"]
+    }
+  },
+  {
+    "id": "group.members.add",
+    "method": "POST",
+    "models": ["GroupMember"],
+    "paths": ["/api/groups/:id/members"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["GroupMemberCreatableDto", "GroupMemberDetailDto"],
+    "authRequired": true,
+    "description": "添加群成员"
+  },
+  {
+    "id": "group.members.remove",
+    "method": "DELETE",
+    "models": ["GroupMember"],
+    "paths": ["/api/groups/:id/members/:userId"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": [],
+    "authRequired": true,
+    "description": "移除群成员"
+  },
+  {
+    "id": "group.invite.create",
+    "method": "POST",
+    "models": ["GroupInvite"],
+    "paths": ["/api/groups/:id/invites"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["GroupInviteCreatableDto", "GroupInviteDetailDto"],
+    "authRequired": true,
+    "description": "创建群邀请链接"
+  },
+  {
+    "id": "group.invite.use",
+    "method": "POST",
+    "models": ["GroupInvite", "GroupMember"],
+    "paths": ["/api/groups/invites/:code/use"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["GroupInviteUseDto"],
+    "authRequired": true,
+    "description": "使用邀请码加入群组"
+  },
+  {
+    "id": "group.join.request",
+    "method": "POST",
+    "models": ["GroupJoinRequest"],
+    "paths": ["/api/groups/:id/join"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["GroupJoinRequestCreatableDto", "GroupJoinRequestDetailDto"],
+    "authRequired": true,
+    "description": "申请加入群组"
+  },
+  {
+    "id": "group.join.handle",
+    "method": "POST",
+    "models": ["GroupJoinRequest"],
+    "paths": ["/api/groups/:id/join/:requestId/handle"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["GroupJoinRequestHandleDto"],
+    "authRequired": true,
+    "description": "处理入群申请（同意/拒绝）"
+  }
+]

@@ -1,0 +1,258 @@
+[
+  {
+    "id": "group.event.list",
+    "method": "GET",
+    "models": ["GroupEvent"],
+    "paths": ["/api/groups/:groupId/events"],
+    "roles": ["admin", "user"],
+    "operateEnum": "eq",
+    "dto": ["GroupEventListDto"],
+    "authRequired": true,
+    "description": "获取群组事件列表",
+    "cache": {
+      "enabled": true,
+      "ttl": 30,
+      "keyFields": ["path", "groupId", "page", "limit"]
+    }
+  },
+  {
+    "id": "group.event.detail",
+    "method": "GET",
+    "models": ["GroupEvent"],
+    "paths": ["/api/groups/:groupId/events/:id"],
+    "roles": ["admin", "user"],
+    "operateEnum": "eq",
+    "dto": ["GroupEventDetailDto"],
+    "authRequired": true,
+    "description": "获取群组事件详情"
+  },
+  {
+    "id": "group.event.create",
+    "method": "POST",
+    "models": ["GroupEvent"],
+    "paths": ["/api/groups/:groupId/events"],
+    "roles": ["admin", "user"],
+    "operateEnum": "eq",
+    "dto": ["GroupEventCreatableDto", "GroupEventDetailDto"],
+    "authRequired": true,
+    "description": "创建群组事件"
+  },
+  {
+    "id": "group.capacity.list",
+    "method": "GET",
+    "models": ["GroupCapacity"],
+    "paths": ["/api/groups/:groupId/capacity"],
+    "roles": ["admin", "user"],
+    "operateEnum": "eq",
+    "dto": ["GroupCapacityListDto"],
+    "authRequired": true,
+    "description": "获取群容量信息"
+  },
+  {
+    "id": "group.capacity.detail",
+    "method": "GET",
+    "models": ["GroupCapacity"],
+    "paths": ["/api/groups/:groupId/capacity/:id"],
+    "roles": ["admin"],
+    "operateEnum": "eq",
+    "dto": ["GroupCapacityDetailDto"],
+    "authRequired": true,
+    "description": "获取群容量详情"
+  },
+  {
+    "id": "group.capacity.create",
+    "method": "POST",
+    "models": ["GroupCapacity"],
+    "paths": ["/api/groups/:groupId/capacity"],
+    "roles": ["admin"],
+    "operateEnum": "eq",
+    "dto": ["GroupCapacityCreatableDto", "GroupCapacityDetailDto"],
+    "authRequired": true,
+    "description": "设置群容量"
+  },
+  {
+    "id": "group.announcement.list",
+    "method": "GET",
+    "models": ["GroupAnnouncement"],
+    "paths": ["/api/groups/:groupId/announcements"],
+    "roles": ["admin", "user"],
+    "operateEnum": "eq",
+    "dto": ["GroupAnnouncementListDto"],
+    "authRequired": true,
+    "description": "获取群公告列表",
+    "cache": {
+      "enabled": true,
+      "ttl": 120,
+      "keyFields": ["path", "groupId"]
+    }
+  },
+  {
+    "id": "group.announcement.detail",
+    "method": "GET",
+    "models": ["GroupAnnouncement"],
+    "paths": ["/api/groups/:groupId/announcements/:id"],
+    "roles": ["admin", "user"],
+    "operateEnum": "eq",
+    "dto": ["GroupAnnouncementDetailDto"],
+    "authRequired": true,
+    "description": "获取群公告详情"
+  },
+  {
+    "id": "group.announcement.create",
+    "method": "POST",
+    "models": ["GroupAnnouncement"],
+    "paths": ["/api/groups/:groupId/announcements"],
+    "roles": ["admin", "user"],
+    "operateEnum": "eq",
+    "dto": ["GroupAnnouncementCreatableDto", "GroupAnnouncementDetailDto"],
+    "authRequired": true,
+    "description": "发布群公告"
+  },
+  {
+    "id": "group.announcement.update",
+    "method": "PUT",
+    "models": ["GroupAnnouncement"],
+    "paths": ["/api/groups/:groupId/announcements/:id"],
+    "roles": ["admin", "user"],
+    "operateEnum": "eq",
+    "dto": ["GroupAnnouncementUpdatableDto", "GroupAnnouncementDetailDto"],
+    "authRequired": true,
+    "description": "更新群公告"
+  },
+  {
+    "id": "group.mute.list",
+    "method": "GET",
+    "models": ["GroupMute"],
+    "paths": ["/api/groups/:groupId/mutes"],
+    "roles": ["admin", "user"],
+    "operateEnum": "eq",
+    "dto": ["GroupMuteListDto"],
+    "authRequired": true,
+    "description": "获取群禁言列表",
+    "cache": {
+      "enabled": true,
+      "ttl": 60,
+      "keyFields": ["path", "groupId"]
+    }
+  },
+  {
+    "id": "group.mute.detail",
+    "method": "GET",
+    "models": ["GroupMute"],
+    "paths": ["/api/groups/:groupId/mutes/:id"],
+    "roles": ["admin", "user"],
+    "operateEnum": "eq",
+    "dto": ["GroupMuteDetailDto"],
+    "authRequired": true,
+    "description": "获取禁言详情"
+  },
+  {
+    "id": "group.mute.create",
+    "method": "POST",
+    "models": ["GroupMute"],
+    "paths": ["/api/groups/:groupId/mutes"],
+    "roles": ["admin", "user"],
+    "operateEnum": "eq",
+    "dto": ["GroupMuteCreatableDto", "GroupMuteDetailDto"],
+    "authRequired": true,
+    "description": "设置群禁言"
+  },
+  {
+    "id": "group.mute.delete",
+    "method": "DELETE",
+    "models": ["GroupMute"],
+    "paths": ["/api/groups/:groupId/mutes/:id"],
+    "roles": ["admin", "user"],
+    "operateEnum": "eq",
+    "dto": ["GroupUnmuteDto"],
+    "authRequired": true,
+    "description": "解除禁言"
+  },
+  {
+    "id": "group.mute.batch",
+    "method": "POST",
+    "models": ["GroupMute"],
+    "paths": ["/api/groups/:groupId/mutes/batch"],
+    "roles": ["admin", "user"],
+    "operateEnum": "eq",
+    "dto": ["GroupMuteBatchDto"],
+    "authRequired": true,
+    "description": "批量禁言"
+  },
+  {
+    "id": "group.setting.get",
+    "method": "GET",
+    "models": ["GroupSetting"],
+    "paths": ["/api/groups/:groupId/settings"],
+    "roles": ["admin", "user"],
+    "operateEnum": "eq",
+    "dto": ["GroupSettingDto"],
+    "authRequired": true,
+    "description": "获取群设置",
+    "cache": {
+      "enabled": true,
+      "ttl": 300,
+      "keyFields": ["path", "groupId"]
+    }
+  },
+  {
+    "id": "group.setting.update",
+    "method": "PUT",
+    "models": ["GroupSetting"],
+    "paths": ["/api/groups/:groupId/settings"],
+    "roles": ["admin", "user"],
+    "operateEnum": "eq",
+    "dto": ["GroupSettingUpdatableDto", "GroupSettingDto"],
+    "authRequired": true,
+    "description": "更新群设置"
+  },
+  {
+    "id": "group.file.list",
+    "method": "GET",
+    "models": ["GroupFile"],
+    "paths": ["/api/groups/:groupId/files"],
+    "roles": ["admin", "user"],
+    "operateEnum": "eq",
+    "dto": ["GroupFileListDto"],
+    "authRequired": true,
+    "description": "获取群文件列表",
+    "cache": {
+      "enabled": true,
+      "ttl": 60,
+      "keyFields": ["path", "groupId", "page", "limit"]
+    }
+  },
+  {
+    "id": "group.file.detail",
+    "method": "GET",
+    "models": ["GroupFile"],
+    "paths": ["/api/groups/:groupId/files/:id"],
+    "roles": ["admin", "user"],
+    "operateEnum": "eq",
+    "dto": ["GroupFileDetailDto"],
+    "authRequired": true,
+    "description": "获取群文件详情"
+  },
+  {
+    "id": "group.file.upload",
+    "method": "POST",
+    "models": ["GroupFile"],
+    "paths": ["/api/groups/:groupId/files"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["GroupFileUploadDto", "GroupFileDetailDto"],
+    "authRequired": true,
+    "description": "上传群文件"
+  },
+  {
+    "id": "group.file.delete",
+    "method": "DELETE",
+    "models": ["GroupFile"],
+    "paths": ["/api/groups/:groupId/files/:id"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["GroupFileDeleteDto"],
+    "authRequired": true,
+    "description": "删除群文件"
+  }
+]

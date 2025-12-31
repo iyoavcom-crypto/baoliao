@@ -1,0 +1,112 @@
+[
+  {
+    "id": "admin.roles.list",
+    "method": "GET",
+    "models": ["Role"],
+    "paths": ["/api/admin/roles"],
+    "roles": ["admin"],
+    "operateEnum": "eq",
+    "dto": ["RoleListDto"],
+    "authRequired": true,
+    "description": "获取角色列表（仅管理员）"
+  },
+  {
+    "id": "admin.roles.create",
+    "method": "POST",
+    "models": ["Role"],
+    "paths": ["/api/admin/roles"],
+    "roles": ["admin"],
+    "operateEnum": "eq",
+    "dto": ["RoleCreatableDto", "RoleDetailDto"],
+    "authRequired": true,
+    "description": "创建角色（仅管理员）"
+  },
+  {
+    "id": "admin.roles.update",
+    "method": "PUT",
+    "models": ["Role"],
+    "paths": ["/api/admin/roles/:id"],
+    "roles": ["admin"],
+    "operateEnum": "eq",
+    "dto": ["RoleUpdatableDto", "RoleDetailDto"],
+    "authRequired": true,
+    "description": "更新角色（仅管理员）"
+  },
+  {
+    "id": "admin.safety.reports.list",
+    "method": "GET",
+    "models": ["Report"],
+    "paths": ["/api/admin/safety/reports"],
+    "roles": ["admin"],
+    "operateEnum": "eq",
+    "dto": ["ReportListDto"],
+    "authRequired": true,
+    "description": "获取举报列表（仅管理员）"
+  },
+  {
+    "id": "admin.safety.reports.handle",
+    "method": "PUT",
+    "models": ["Report"],
+    "paths": ["/api/admin/safety/reports/:id"],
+    "roles": ["admin"],
+    "operateEnum": "eq",
+    "dto": ["ReportUpdatableDto", "ReportDetailDto"],
+    "authRequired": true,
+    "description": "处理举报（仅管理员）"
+  },
+  {
+    "id": "admin.safety.penalties.list",
+    "method": "GET",
+    "models": ["Penalty"],
+    "paths": ["/api/admin/safety/penalties"],
+    "roles": ["admin"],
+    "operateEnum": "eq",
+    "dto": ["PenaltyListDto"],
+    "authRequired": true,
+    "description": "获取处罚列表（仅管理员）"
+  },
+  {
+    "id": "admin.safety.penalties.create",
+    "method": "POST",
+    "models": ["Penalty"],
+    "paths": ["/api/admin/safety/penalties"],
+    "roles": ["admin"],
+    "operateEnum": "eq",
+    "dto": ["PenaltyCreatableDto", "PenaltyDetailDto"],
+    "authRequired": true,
+    "description": "创建处罚（仅管理员）"
+  },
+  {
+    "id": "admin.safety.ipblock.list",
+    "method": "GET",
+    "models": ["IpBlock"],
+    "paths": ["/api/admin/safety/ipblock"],
+    "roles": ["admin"],
+    "operateEnum": "eq",
+    "dto": ["IpBlockListDto"],
+    "authRequired": true,
+    "description": "获取IP封禁列表（仅管理员）"
+  },
+  {
+    "id": "admin.safety.ipblock.create",
+    "method": "POST",
+    "models": ["IpBlock"],
+    "paths": ["/api/admin/safety/ipblock"],
+    "roles": ["admin"],
+    "operateEnum": "eq",
+    "dto": ["IpBlockCreatableDto", "IpBlockDetailDto"],
+    "authRequired": true,
+    "description": "创建IP封禁（仅管理员）"
+  },
+  {
+    "id": "admin.safety.ratelimit.logs",
+    "method": "GET",
+    "models": ["RateLimitLog"],
+    "paths": ["/api/admin/safety/ratelimit/logs"],
+    "roles": ["admin"],
+    "operateEnum": "eq",
+    "dto": ["RateLimitLogListDto"],
+    "authRequired": true,
+    "description": "获取限流日志（仅管理员）"
+  }
+]

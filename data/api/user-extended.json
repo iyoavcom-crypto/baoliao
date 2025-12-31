@@ -1,0 +1,237 @@
+[
+  {
+    "id": "user.device.list",
+    "method": "GET",
+    "models": ["UserDevice"],
+    "paths": ["/api/users/:userId/devices"],
+    "roles": ["admin", "user"],
+    "operateEnum": "eq",
+    "dto": ["DeviceListDto"],
+    "authRequired": true,
+    "description": "获取用户设备列表"
+  },
+  {
+    "id": "user.device.detail",
+    "method": "GET",
+    "models": ["UserDevice"],
+    "paths": ["/api/users/:userId/devices/:id"],
+    "roles": ["admin", "user"],
+    "operateEnum": "eq",
+    "dto": ["DeviceDetailDto"],
+    "authRequired": true,
+    "description": "获取设备详情"
+  },
+  {
+    "id": "user.device.create",
+    "method": "POST",
+    "models": ["UserDevice"],
+    "paths": ["/api/users/:userId/devices"],
+    "roles": ["admin", "user"],
+    "operateEnum": "eq",
+    "dto": ["DeviceCreatableDto", "DeviceDetailDto"],
+    "authRequired": true,
+    "description": "注册新设备"
+  },
+  {
+    "id": "user.device.update",
+    "method": "PUT",
+    "models": ["UserDevice"],
+    "paths": ["/api/users/:userId/devices/:id"],
+    "roles": ["admin", "user"],
+    "operateEnum": "eq",
+    "dto": ["DeviceUpdatableDto", "DeviceDetailDto"],
+    "authRequired": true,
+    "description": "更新设备信息"
+  },
+  {
+    "id": "user.device.delete",
+    "method": "DELETE",
+    "models": ["UserDevice"],
+    "paths": ["/api/users/:userId/devices/:id"],
+    "roles": ["admin", "user"],
+    "operateEnum": "eq",
+    "dto": [],
+    "authRequired": true,
+    "description": "删除设备"
+  },
+  {
+    "id": "user.session.list",
+    "method": "GET",
+    "models": ["UserSession"],
+    "paths": ["/api/users/:userId/sessions"],
+    "roles": ["admin", "user"],
+    "operateEnum": "eq",
+    "dto": ["SessionListDto"],
+    "authRequired": true,
+    "description": "获取用户会话列表",
+    "cache": {
+      "enabled": true,
+      "ttl": 30,
+      "keyFields": ["path", "userId"]
+    }
+  },
+  {
+    "id": "user.session.detail",
+    "method": "GET",
+    "models": ["UserSession"],
+    "paths": ["/api/users/:userId/sessions/:id"],
+    "roles": ["admin", "user"],
+    "operateEnum": "eq",
+    "dto": ["SessionDetailDto"],
+    "authRequired": true,
+    "description": "获取会话详情"
+  },
+  {
+    "id": "user.session.create",
+    "method": "POST",
+    "models": ["UserSession"],
+    "paths": ["/api/users/:userId/sessions"],
+    "roles": ["admin", "user"],
+    "operateEnum": "eq",
+    "dto": ["SessionCreatableDto", "SessionDetailDto"],
+    "authRequired": true,
+    "description": "创建新会话"
+  },
+  {
+    "id": "user.presence.get",
+    "method": "GET",
+    "models": ["UserPresence"],
+    "paths": ["/api/users/:userId/presence"],
+    "roles": ["admin", "user"],
+    "operateEnum": "eq",
+    "dto": ["UserPresenceDto"],
+    "authRequired": true,
+    "description": "获取用户在线状态",
+    "cache": {
+      "enabled": true,
+      "ttl": 10,
+      "keyFields": ["path", "userId"]
+    }
+  },
+  {
+    "id": "user.presence.update",
+    "method": "PUT",
+    "models": ["UserPresence"],
+    "paths": ["/api/users/:userId/presence"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["UserPresenceUpdateDto", "UserPresenceDto"],
+    "authRequired": true,
+    "description": "更新在线状态"
+  },
+  {
+    "id": "user.presence.batch",
+    "method": "POST",
+    "models": ["UserPresence"],
+    "paths": ["/api/users/presence/batch"],
+    "roles": ["admin", "user"],
+    "operateEnum": "eq",
+    "dto": ["UserPresenceBatchDto", "UserPresenceBatchResponseDto"],
+    "authRequired": true,
+    "description": "批量获取在线状态"
+  },
+  {
+    "id": "user.presence.subscribe",
+    "method": "POST",
+    "models": ["UserPresence"],
+    "paths": ["/api/users/presence/subscribe"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["UserPresenceSubscribeDto"],
+    "authRequired": true,
+    "description": "订阅在线状态"
+  },
+  {
+    "id": "user.typing.start",
+    "method": "POST",
+    "models": ["TypingIndicator"],
+    "paths": ["/api/conversations/:conversationId/typing/start"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["TypingIndicatorStartDto", "TypingIndicatorDto"],
+    "authRequired": true,
+    "description": "开始输入"
+  },
+  {
+    "id": "user.typing.stop",
+    "method": "POST",
+    "models": ["TypingIndicator"],
+    "paths": ["/api/conversations/:conversationId/typing/stop"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["TypingIndicatorStopDto"],
+    "authRequired": true,
+    "description": "停止输入"
+  },
+  {
+    "id": "user.typing.batch",
+    "method": "POST",
+    "models": ["TypingIndicator"],
+    "paths": ["/api/conversations/typing/batch"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["TypingIndicatorBatchDto"],
+    "authRequired": true,
+    "description": "批量获取输入状态"
+  },
+  {
+    "id": "user.block.list",
+    "method": "GET",
+    "models": ["UserBlock"],
+    "paths": ["/api/users/:userId/blocks"],
+    "roles": ["admin", "user"],
+    "operateEnum": "eq",
+    "dto": ["UserBlockListDto"],
+    "authRequired": true,
+    "description": "获取拉黑列表",
+    "cache": {
+      "enabled": true,
+      "ttl": 60,
+      "keyFields": ["path", "userId"]
+    }
+  },
+  {
+    "id": "user.block.detail",
+    "method": "GET",
+    "models": ["UserBlock"],
+    "paths": ["/api/users/:userId/blocks/:id"],
+    "roles": ["admin", "user"],
+    "operateEnum": "eq",
+    "dto": ["UserBlockDetailDto"],
+    "authRequired": true,
+    "description": "获取拉黑详情"
+  },
+  {
+    "id": "user.block.create",
+    "method": "POST",
+    "models": ["UserBlock"],
+    "paths": ["/api/users/:userId/blocks"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["UserBlockCreatableDto", "UserBlockDetailDto"],
+    "authRequired": true,
+    "description": "拉黑用户"
+  },
+  {
+    "id": "user.block.delete",
+    "method": "DELETE",
+    "models": ["UserBlock"],
+    "paths": ["/api/users/:userId/blocks/:id"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["UserUnblockDto"],
+    "authRequired": true,
+    "description": "取消拉黑"
+  },
+  {
+    "id": "user.block.check",
+    "method": "POST",
+    "models": ["UserBlock"],
+    "paths": ["/api/users/blocks/check"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["UserBlockCheckDto", "UserBlockCheckResponseDto"],
+    "authRequired": true,
+    "description": "检查是否拉黑"
+  }
+]

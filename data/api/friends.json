@@ -1,0 +1,120 @@
+[
+  {
+    "id": "friend.list",
+    "method": "GET",
+    "models": ["UserFriend"],
+    "paths": ["/api/friends"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["FriendListDto"],
+    "fields": ["id", "friendId", "remark", "tags", "isFavorite", "createdAt"],
+    "authRequired": true,
+    "allowedSortFields": ["createdAt", "remark"],
+    "defaultSortField": "createdAt",
+    "description": "获取好友列表",
+    "cache": {
+      "enabled": true,
+      "ttl": 120,
+      "keyFields": ["path", "userId"]
+    }
+  },
+  {
+    "id": "friend.detail",
+    "method": "GET",
+    "models": ["UserFriend"],
+    "paths": ["/api/friends/:id"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["FriendDetailDto"],
+    "authRequired": true,
+    "description": "获取好友详情"
+  },
+  {
+    "id": "friend.add",
+    "method": "POST",
+    "models": ["UserFriend", "FriendRequestEvent"],
+    "paths": ["/api/friends"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["FriendRequestDto", "FriendDetailDto"],
+    "authRequired": true,
+    "description": "添加好友（发送好友申请）"
+  },
+  {
+    "id": "friend.accept",
+    "method": "POST",
+    "models": ["UserFriend", "FriendRequestEvent"],
+    "paths": ["/api/friends/requests/:id/accept"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["FriendAcceptDto"],
+    "authRequired": true,
+    "description": "接受好友申请"
+  },
+  {
+    "id": "friend.reject",
+    "method": "POST",
+    "models": ["FriendRequestEvent"],
+    "paths": ["/api/friends/requests/:id/reject"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": [],
+    "authRequired": true,
+    "description": "拒绝好友申请"
+  },
+  {
+    "id": "friend.delete",
+    "method": "DELETE",
+    "models": ["UserFriend"],
+    "paths": ["/api/friends/:id"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": [],
+    "authRequired": true,
+    "description": "删除好友"
+  },
+  {
+    "id": "friend.update",
+    "method": "PUT",
+    "models": ["UserFriend"],
+    "paths": ["/api/friends/:id"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["FriendUpdatableDto", "FriendDetailDto"],
+    "authRequired": true,
+    "description": "更新好友信息（备注、标签等）"
+  },
+  {
+    "id": "friend.block",
+    "method": "POST",
+    "models": ["UserFriend"],
+    "paths": ["/api/friends/:id/block"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["FriendBlockDto"],
+    "authRequired": true,
+    "description": "拉黑好友"
+  },
+  {
+    "id": "friend.unblock",
+    "method": "DELETE",
+    "models": ["UserFriend"],
+    "paths": ["/api/friends/:id/block"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": [],
+    "authRequired": true,
+    "description": "取消拉黑"
+  },
+  {
+    "id": "friend.requests.list",
+    "method": "GET",
+    "models": ["FriendRequestEvent"],
+    "paths": ["/api/friends/requests"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["FriendRequestEventListDto", "FriendRequestEventQueryDto"],
+    "authRequired": true,
+    "description": "获取好友申请列表"
+  }
+]

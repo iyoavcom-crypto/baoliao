@@ -1,0 +1,120 @@
+[
+  {
+    "id": "message.list",
+    "method": "GET",
+    "models": ["Message"],
+    "paths": ["/api/messages"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["MessageListDto", "MessageListQueryDto"],
+    "fields": ["id", "conversationId", "senderId", "kind", "content", "seq", "createdAt"],
+    "authRequired": true,
+    "allowedSortFields": ["createdAt", "seq"],
+    "defaultSortField": "createdAt",
+    "description": "获取消息列表",
+    "cache": {
+      "enabled": true,
+      "ttl": 30,
+      "keyFields": ["path", "conversationId", "cursor"]
+    }
+  },
+  {
+    "id": "message.history",
+    "method": "POST",
+    "models": ["Message"],
+    "paths": ["/api/messages/history"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["MessageHistoryRequestDto", "MessageHistoryResponseDto"],
+    "authRequired": true,
+    "description": "获取消息历史（游标分页）"
+  },
+  {
+    "id": "message.detail",
+    "method": "GET",
+    "models": ["Message"],
+    "paths": ["/api/messages/:id"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["MessageDetailDto"],
+    "authRequired": true,
+    "description": "获取消息详情"
+  },
+  {
+    "id": "message.send",
+    "method": "POST",
+    "models": ["Message"],
+    "paths": ["/api/messages"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["MessageCreatableDto", "MessageDetailDto"],
+    "authRequired": true,
+    "description": "发送消息"
+  },
+  {
+    "id": "message.edit",
+    "method": "PUT",
+    "models": ["Message", "MessageEdit"],
+    "paths": ["/api/messages/:id/edit"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["MessageEditRequestDto", "MessageDetailDto"],
+    "authRequired": true,
+    "description": "编辑消息"
+  },
+  {
+    "id": "message.recall",
+    "method": "POST",
+    "models": ["Message", "MessageRecall"],
+    "paths": ["/api/messages/:id/recall"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["MessageRecallRequestDto"],
+    "authRequired": true,
+    "description": "撤回消息"
+  },
+  {
+    "id": "message.read",
+    "method": "POST",
+    "models": ["MessageRead"],
+    "paths": ["/api/messages/:id/read"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["MessageReadRequestDto", "MessageReadResponseDto"],
+    "authRequired": true,
+    "description": "标记消息已读"
+  },
+  {
+    "id": "message.reaction.add",
+    "method": "POST",
+    "models": ["MessageReaction"],
+    "paths": ["/api/messages/:id/reactions"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["MessageReactionCreatableDto", "MessageReactionDetailDto"],
+    "authRequired": true,
+    "description": "添加消息表情回复"
+  },
+  {
+    "id": "message.reaction.remove",
+    "method": "DELETE",
+    "models": ["MessageReaction"],
+    "paths": ["/api/messages/:id/reactions/:reactionId"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["MessageReactionDeleteDto"],
+    "authRequired": true,
+    "description": "删除消息表情回复"
+  },
+  {
+    "id": "message.search",
+    "method": "POST",
+    "models": ["Message"],
+    "paths": ["/api/messages/search"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["MessageSearchDto", "MessageSearchResponseDto"],
+    "authRequired": true,
+    "description": "搜索消息"
+  }
+]

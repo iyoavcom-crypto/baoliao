@@ -1,0 +1,89 @@
+[
+  {
+    "id": "conversation.member.list",
+    "method": "GET",
+    "models": ["ConversationMember"],
+    "paths": ["/api/conversations/:conversationId/members"],
+    "roles": ["admin", "user"],
+    "operateEnum": "eq",
+    "dto": ["ConversationMemberListDto"],
+    "authRequired": true,
+    "description": "获取会话成员列表",
+    "cache": {
+      "enabled": true,
+      "ttl": 60,
+      "keyFields": ["path", "conversationId"]
+    }
+  },
+  {
+    "id": "conversation.member.detail",
+    "method": "GET",
+    "models": ["ConversationMember"],
+    "paths": ["/api/conversations/:conversationId/members/:memberId"],
+    "roles": ["admin", "user"],
+    "operateEnum": "eq",
+    "dto": ["ConversationMemberDetailDto"],
+    "authRequired": true,
+    "description": "获取会话成员详情"
+  },
+  {
+    "id": "conversation.member.update",
+    "method": "PUT",
+    "models": ["ConversationMember"],
+    "paths": ["/api/conversations/:conversationId/members/:memberId"],
+    "roles": ["admin", "user"],
+    "operateEnum": "eq",
+    "dto": ["ConversationMemberUpdatableDto", "ConversationMemberDetailDto"],
+    "authRequired": true,
+    "description": "更新会话成员信息"
+  },
+  {
+    "id": "conversation.draft.get",
+    "method": "GET",
+    "models": ["ConversationDraft"],
+    "paths": ["/api/conversations/:conversationId/draft"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["ConversationDraftDto"],
+    "authRequired": true,
+    "description": "获取会话草稿",
+    "cache": {
+      "enabled": true,
+      "ttl": 30,
+      "keyFields": ["path", "conversationId"]
+    }
+  },
+  {
+    "id": "conversation.draft.save",
+    "method": "PUT",
+    "models": ["ConversationDraft"],
+    "paths": ["/api/conversations/:conversationId/draft"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["ConversationDraftSaveDto", "ConversationDraftDto"],
+    "authRequired": true,
+    "description": "保存会话草稿"
+  },
+  {
+    "id": "conversation.draft.delete",
+    "method": "DELETE",
+    "models": ["ConversationDraft"],
+    "paths": ["/api/conversations/:conversationId/draft"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["ConversationDraftDeleteDto"],
+    "authRequired": true,
+    "description": "删除会话草稿"
+  },
+  {
+    "id": "conversation.draft.batch",
+    "method": "POST",
+    "models": ["ConversationDraft"],
+    "paths": ["/api/conversations/drafts/batch"],
+    "roles": ["user"],
+    "operateEnum": "eq",
+    "dto": ["ConversationDraftBatchDto"],
+    "authRequired": true,
+    "description": "批量获取草稿"
+  }
+]
