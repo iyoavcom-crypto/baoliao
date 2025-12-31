@@ -35,6 +35,13 @@ import {
 import { Message, ConversationMember } from "@/models";
 import { getLogger } from "@/tools/logging";
 import { uuid4 } from "@/utils/common/generate/uuid";
+import { 
+  wsRequireAuth, 
+  wsValidateRequired, 
+  wsHandleError, 
+  wsValidateCustom,
+  wsSendError 
+} from "@/utils/validation/ws-validation";
 
 const logger = getLogger("ws:message");
 
@@ -43,49 +50,28 @@ const logger = getLogger("ws:message");
  * @description 处理消息发送请求
  */
 export async function handleSend(socket: WebSocket, event: WsEvent): Promise<void> {
-  const userId = connectionManager.getUserIdBySocket(socket);
-  if (!userId) {
-    socket.send(
-      JSON.stringify(
-        createErrorEvent(WS_ERROR_CODES.UNAUTHORIZED, "Not authenticated", event.requestId)
-      )
-    );
-    return;
-  }
+  const userId = wsRequireAuth(socket, event);
+  if (!userId) return;
 
   const data = event.data as MessageSendReqData;
+  if (!wsValidateRequired(socket, event, { 
+    conversationId: data?.conversationId, 
+    content: data?.content 
+  })) return;
 
-  if (!data || !data.conversationId || !data.content) {
-    socket.send(
-      JSON.stringify(
-        createErrorEvent(
-          WS_ERROR_CODES.INVALID_REQUEST,
-          "conversationId and content are required",
-          event.requestId
-        )
-      )
-    );
-    return;
-  }
-
-  try {
+  await wsHandleError(socket, event, async () => {
     // 验证权限（用户是否是会话成员）
     const member = await ConversationMember.findOne({
       where: { conversationId: data.conversationId, userId },
     });
 
-    if (!member) {
-      socket.send(
-        JSON.stringify(
-          createErrorEvent(
-            WS_ERROR_CODES.NOT_MEMBER,
-            "You are not a member of this conversation",
-            event.requestId
-          )
-        )
-      );
-      return;
-    }
+    if (!wsValidateCustom(
+      socket, 
+      event, 
+      !!member, 
+      WS_ERROR_CODES.NOT_MEMBER, 
+      "You are not a member of this conversation"
+    )) return;
 
     // 生成消息ID和序列号
     const msgId = uuid4();
@@ -148,18 +134,7 @@ export async function handleSend(socket: WebSocket, event: WsEvent): Promise<voi
       conversationId: data.conversationId,
       senderId: userId,
     });
-  } catch (error: any) {
-    logger.error("[WS] Failed to send message", { error: error.message });
-    socket.send(
-      JSON.stringify(
-        createErrorEvent(
-          WS_ERROR_CODES.INTERNAL_ERROR,
-          error.message || "Failed to send message",
-          event.requestId
-        )
-      )
-    );
-  }
+  });
 }
 
 /**
@@ -167,62 +142,37 @@ export async function handleSend(socket: WebSocket, event: WsEvent): Promise<voi
  * @description 处理消息撤回请求
  */
 export async function handleRecall(socket: WebSocket, event: WsEvent): Promise<void> {
-  const userId = connectionManager.getUserIdBySocket(socket);
-  if (!userId) {
-    socket.send(
-      JSON.stringify(
-        createErrorEvent(WS_ERROR_CODES.UNAUTHORIZED, "Not authenticated", event.requestId)
-      )
-    );
-    return;
-  }
+  const userId = wsRequireAuth(socket, event);
+  if (!userId) return;
 
   const data = event.data as MessageRecallReqData;
+  if (!wsValidateRequired(socket, event, { msgId: data?.msgId })) return;
 
-  if (!data || !data.msgId) {
-    socket.send(
-      JSON.stringify(
-        createErrorEvent(WS_ERROR_CODES.INVALID_REQUEST, "msgId is required", event.requestId)
-      )
-    );
-    return;
-  }
-
-  try {
+  await wsHandleError(socket, event, async () => {
     // 查找消息
     const message = await Message.findOne({
       where: { msgId: data.msgId },
     });
 
-    if (!message) {
-      socket.send(
-        JSON.stringify(
-          createErrorEvent(
-            WS_ERROR_CODES.MESSAGE_NOT_FOUND,
-            "Message not found",
-            event.requestId
-          )
-        )
-      );
-      return;
-    }
+    if (!wsValidateCustom(
+      socket, 
+      event, 
+      !!message, 
+      WS_ERROR_CODES.MESSAGE_NOT_FOUND, 
+      "Message not found"
+    )) return;
 
     // 验证权限（只能撤回自己的消息）
-    if (message.senderId !== userId) {
-      socket.send(
-        JSON.stringify(
-          createErrorEvent(
-            WS_ERROR_CODES.FORBIDDEN,
-            "You can only recall your own messages",
-            event.requestId
-          )
-        )
-      );
-      return;
-    }
+    if (!wsValidateCustom(
+      socket,
+      event,
+      message!.senderId === userId,
+      WS_ERROR_CODES.FORBIDDEN,
+      "You can only recall your own messages"
+    )) return;
 
     // 更新消息状态
-    await message.update({ 
+    await message!.update({ 
       deletedForAll: true,
       recallBy: userId,
       recalledAt: new Date()
@@ -237,13 +187,13 @@ export async function handleRecall(socket: WebSocket, event: WsEvent): Promise<v
 
     // 推送撤回通知给会话成员
     const members = await ConversationMember.findAll({
-      where: { conversationId: message.conversationId },
+      where: { conversationId: message!.conversationId },
       attributes: ["userId"],
     });
 
     const pushData: MessageRecalledPushData = {
       msgId: data.msgId,
-      conversationId: message.conversationId,
+      conversationId: message!.conversationId,
       recalledAt: Date.now(),
     };
 
@@ -258,18 +208,7 @@ export async function handleRecall(socket: WebSocket, event: WsEvent): Promise<v
       msgId: data.msgId,
       userId,
     });
-  } catch (error: any) {
-    logger.error("[WS] Failed to recall message", { error: error.message });
-    socket.send(
-      JSON.stringify(
-        createErrorEvent(
-          WS_ERROR_CODES.INTERNAL_ERROR,
-          error.message || "Failed to recall message",
-          event.requestId
-        )
-      )
-    );
-  }
+  });
 }
 
 /**
