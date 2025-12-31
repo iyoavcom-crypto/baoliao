@@ -202,15 +202,6 @@ export async function handleSend(socket: WebSocket, event: WsEvent): Promise<voi
 
 ---
 
-### `wsValidateData(socket, event)`
-
-验证WebSocket事件是否包含data字段。
-
-**返回:**
-- `boolean` - data存在且为对象返回true，否则返回false并发送错误
-
----
-
 ### `wsHandleError(socket, event, handler, options?)`
 
 WebSocket错误处理包装器，自动捕获异常并发送错误事件。

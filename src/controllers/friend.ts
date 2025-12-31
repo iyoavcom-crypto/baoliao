@@ -84,19 +84,16 @@ export const acceptFriend = wrap(async (req: Request, res: Response): Promise<vo
   const requestEvent = await FriendRequestEvent.findByPk(requestId);
   
   if (!requestEvent) {
-    const error: any = new Error("Friend request not found");
+    const error = new Error("Friend request not found") as any;
     error.status = 404;
     throw error;
   }
 
   // 验证是申请的接收方
   if (requestEvent.toId !== userId) {
-    res.status(403).json({
-      code: "FORBIDDEN",
-      message: "You are not the recipient of this request",
-      status: 403
-    });
-    return;
+    const error = new Error("You are not the recipient of this request") as any;
+    error.status = 403;
+    throw error;
   }
 
   // 检查申请状态

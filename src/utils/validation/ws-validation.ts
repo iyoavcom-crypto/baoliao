@@ -73,29 +73,6 @@ export function wsValidateRequired(
 }
 
 /**
- * @function wsValidateData
- * @description 验证WebSocket事件是否包含data字段
- * @param {WebSocket} socket - WebSocket连接
- * @param {WsEvent} event - WebSocket事件
- * @returns {boolean} 如果data存在返回true，否则返回false并发送错误事件
- */
-export function wsValidateData(socket: WebSocket, event: WsEvent): boolean {
-  if (!event.data || typeof event.data !== "object") {
-    socket.send(
-      JSON.stringify(
-        createErrorEvent(
-          WS_ERROR_CODES.INVALID_REQUEST,
-          "Invalid or missing event data",
-          event.requestId
-        )
-      )
-    );
-    return false;
-  }
-  return true;
-}
-
-/**
  * @interface WsErrorHandlerOptions
  * @description WebSocket错误处理选项
  */

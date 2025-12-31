@@ -162,17 +162,20 @@ export async function handleRecall(socket: WebSocket, event: WsEvent): Promise<v
       "Message not found"
     )) return;
 
+    // Type assertion is safe here because we validated message exists above
+    const validMessage = message as Message;
+
     // 验证权限（只能撤回自己的消息）
     if (!wsValidateCustom(
       socket,
       event,
-      message!.senderId === userId,
+      validMessage.senderId === userId,
       WS_ERROR_CODES.FORBIDDEN,
       "You can only recall your own messages"
     )) return;
 
     // 更新消息状态
-    await message!.update({ 
+    await validMessage.update({ 
       deletedForAll: true,
       recallBy: userId,
       recalledAt: new Date()
@@ -187,13 +190,13 @@ export async function handleRecall(socket: WebSocket, event: WsEvent): Promise<v
 
     // 推送撤回通知给会话成员
     const members = await ConversationMember.findAll({
-      where: { conversationId: message!.conversationId },
+      where: { conversationId: validMessage.conversationId },
       attributes: ["userId"],
     });
 
     const pushData: MessageRecalledPushData = {
       msgId: data.msgId,
-      conversationId: message!.conversationId,
+      conversationId: validMessage.conversationId,
       recalledAt: Date.now(),
     };
 
