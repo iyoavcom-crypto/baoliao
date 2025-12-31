@@ -11,16 +11,19 @@ import type { WsEvent } from "@/types/ws/protocol";
 import type {
   ConversationTypingReqData,
   ConversationTypingPushData,
+  ConversationBadgePushData,
 } from "@/types/ws/events";
 import { connectionManager } from "@/routes/ws/connection-manager";
 import { createAckEvent, createPushEvent, createErrorEvent } from "@/routes/ws/protocol";
 import { WS_ERROR_CODES } from "@/constants/ws/errors";
 import {
   CONVERSATION_TYPING_PUSH,
+  CONVERSATION_BADGE_PUSH,
 } from "@/constants/ws/events";
 import { ConversationMember } from "@/models";
 import { Conversation, User, UserFriend } from "@/models";
 import { getLogger } from "@/tools/logging";
+import { uuid4 } from "@/utils/common/generate/uuid";
 
 const logger = getLogger("ws:conversation");
 
@@ -215,16 +218,12 @@ export async function handleCreate(socket: WebSocket, event: WsEvent): Promise<v
         return;
       }
 
+      // 生成私聊唯一键
+      const directKey = [userId, data.targetUserId].sort().join("_");
+
       // 检查是否已存在私聊会话
       const existingConv = await Conversation.findOne({
-        include: [
-          {
-            model: ConversationMember,
-            as: 'members',
-            where: { userId: [userId, data.targetUserId] },
-            required: true
-          }
-        ]
+        where: { directKey }
       });
 
       if (existingConv) {
@@ -239,8 +238,13 @@ export async function handleCreate(socket: WebSocket, event: WsEvent): Promise<v
       }
 
       // 创建新的私聊会话
+      const convId = uuid4();
       conversation = await Conversation.create({
-        lastMessageId: 0
+        convId,
+        kind: 'direct',
+        directKey,
+        directUserA: userId,
+        directUserB: data.targetUserId
       });
 
       // 添加两个成员
@@ -402,5 +406,68 @@ export async function handleList(socket: WebSocket, event: WsEvent): Promise<voi
   } catch (error: any) {
     logger.error("[WS] Failed to get conversation list", { error: error.message });
     socket.send(JSON.stringify(createErrorEvent(WS_ERROR_CODES.INTERNAL_ERROR, error.message, event.requestId)));
+  }
+}
+
+/**
+ * @function pushBadgeUpdate
+ * @description 推送会话未读数更新给用户
+ * @param userId 目标用户ID
+ * @param conversationId 会话ID
+ * @param unreadCount 未读数
+ */
+export async function pushBadgeUpdate(
+  userId: string,
+  conversationId: number,
+  unreadCount: number
+): Promise<void> {
+  try {
+    const pushData: ConversationBadgePushData = {
+      conversationId: String(conversationId),
+      unreadCount
+    };
+
+    connectionManager.pushToUser(
+      userId,
+      createPushEvent(CONVERSATION_BADGE_PUSH, pushData)
+    );
+
+    logger.debug("[WS] Badge update pushed", { userId, conversationId, unreadCount });
+  } catch (error: any) {
+    logger.error("[WS] Failed to push badge update", { error: error.message });
+  }
+}
+
+/**
+ * @function pushBadgeUpdateToMembers
+ * @description 推送会话未读数更新给会话成员（排除指定用户）
+ * @param conversationId 会话ID
+ * @param excludeUserId 排除的用户ID（通常是消息发送者）
+ */
+export async function pushBadgeUpdateToMembers(
+  conversationId: number,
+  excludeUserId?: string
+): Promise<void> {
+  try {
+    // 获取会话成员
+    const members = await ConversationMember.findAll({
+      where: { conversationId },
+      attributes: ["userId", "unreadCount"]
+    });
+
+    // 推送给除了排除用户外的所有成员
+    for (const member of members) {
+      if (excludeUserId && member.userId === excludeUserId) {
+        continue;
+      }
+
+      await pushBadgeUpdate(
+        member.userId,
+        conversationId,
+        member.unreadCount || 0
+      );
+    }
+  } catch (error: any) {
+    logger.error("[WS] Failed to push badge update to members", { error: error.message });
   }
 }

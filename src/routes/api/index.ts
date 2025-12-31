@@ -11,6 +11,8 @@ import { allApis } from "@/config/catalog";
 import { createLoginMiddleware } from "@/middleware/auth/login";
 import { createRegisterMiddleware } from "@/middleware/auth/register";
 import { addFriend, acceptFriend } from "@/controllers/friend";
+import { createConversation } from "@/controllers/conversation";
+import { sendMessage } from "@/controllers/message";
 
 // 导出工具函数和类型
 export { buildCrudPipeline } from "./pipeline";
@@ -32,6 +34,8 @@ customHandlers.set("auth.login", createLoginMiddleware());
 customHandlers.set("auth.register", createRegisterMiddleware());
 customHandlers.set("friend.add", addFriend);
 customHandlers.set("friend.accept", acceptFriend);
+customHandlers.set("conversation.create", createConversation);
+customHandlers.set("message.send", sendMessage);
 
 /**
  * @constant routes
