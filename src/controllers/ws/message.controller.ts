@@ -35,6 +35,7 @@ import {
 import { Message, ConversationMember } from "@/models";
 import { getLogger } from "@/tools/logging";
 import { uuid4 } from "@/utils/common/generate/uuid";
+import { pushBadgeUpdateToMembers } from "./conversation.controller";
 
 const logger = getLogger("ws:message");
 
@@ -142,6 +143,19 @@ export async function handleSend(socket: WebSocket, event: WsEvent): Promise<voi
         connectionManager.pushToUser(m.userId, createPushEvent(MESSAGE_PUSH, pushData));
       }
     }
+
+    // 更新其他成员的未读数
+    const { Op } = require("sequelize");
+    await ConversationMember.increment("unreadCount", {
+      by: 1,
+      where: {
+        conversationId: data.conversationId,
+        userId: { [Op.ne]: userId }
+      }
+    });
+
+    // 推送未读数更新给其他成员
+    await pushBadgeUpdateToMembers(data.conversationId, userId);
 
     logger.info("[WS] Message sent", {
       msgId,
