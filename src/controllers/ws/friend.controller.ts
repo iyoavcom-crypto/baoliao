@@ -27,6 +27,12 @@ import {
 } from "@/constants/ws/events";
 import { UserFriend, FriendRequestEvent, User } from "@/models";
 import { getLogger } from "@/tools/logging";
+import { 
+  wsRequireAuth, 
+  wsValidateRequired, 
+  wsHandleError, 
+  wsValidateCustom 
+} from "@/utils/validation/ws-validation";
 
 const logger = getLogger("ws:friend");
 
@@ -35,34 +41,34 @@ const logger = getLogger("ws:friend");
  * @description 处理好友申请
  */
 export async function handleApply(socket: WebSocket, event: WsEvent): Promise<void> {
-  const userId = connectionManager.getUserIdBySocket(socket);
-  if (!userId) {
-    socket.send(JSON.stringify(createErrorEvent(WS_ERROR_CODES.UNAUTHORIZED, "Not authenticated", event.requestId)));
-    return;
-  }
+  const userId = wsRequireAuth(socket, event);
+  if (!userId) return;
 
   const data = event.data as FriendApplyReqData;
-  if (!data || !data.friendId) {
-    socket.send(JSON.stringify(createErrorEvent(WS_ERROR_CODES.INVALID_REQUEST, "friendId is required", event.requestId)));
-    return;
-  }
+  if (!wsValidateRequired(socket, event, { friendId: data?.friendId })) return;
 
-  try {
+  await wsHandleError(socket, event, async () => {
     // 检查目标用户是否存在
     const targetUser = await User.findByPk(data.friendId);
-    if (!targetUser) {
-      socket.send(JSON.stringify(createErrorEvent(WS_ERROR_CODES.USER_NOT_FOUND, "User not found", event.requestId)));
-      return;
-    }
+    if (!wsValidateCustom(
+      socket, 
+      event, 
+      !!targetUser, 
+      WS_ERROR_CODES.USER_NOT_FOUND, 
+      "User not found"
+    )) return;
 
     // 检查是否已经是好友
     const existingFriend = await UserFriend.findOne({
       where: { userId, friendId: data.friendId }
     });
-    if (existingFriend && existingFriend.status === 'accepted') {
-      socket.send(JSON.stringify(createErrorEvent(WS_ERROR_CODES.ALREADY_FRIEND, "Already friends", event.requestId)));
-      return;
-    }
+    if (!wsValidateCustom(
+      socket,
+      event,
+      !(existingFriend && existingFriend.status === 'accepted'),
+      WS_ERROR_CODES.ALREADY_FRIEND,
+      "Already friends"
+    )) return;
 
     // 创建好友申请事件
     const request = await FriendRequestEvent.create({
@@ -91,10 +97,7 @@ export async function handleApply(socket: WebSocket, event: WsEvent): Promise<vo
     connectionManager.pushToUser(data.friendId, createPushEvent(FRIEND_APPLY_PUSH, pushData));
 
     logger.info("[WS] Friend request sent", { fromId: userId, toId: data.friendId, requestId: request.id });
-  } catch (error: any) {
-    logger.error("[WS] Failed to send friend request", { error: error.message });
-    socket.send(JSON.stringify(createErrorEvent(WS_ERROR_CODES.INTERNAL_ERROR, error.message, event.requestId)));
-  }
+  });
 }
 
 /**

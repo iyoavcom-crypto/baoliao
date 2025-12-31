@@ -7,6 +7,7 @@
  */
 
 import type { Group } from "./index.js";
+import { numberInRange, assertValid } from "@/models/_shared/validators";
 
 /**
  * @function setupGroupHooks
@@ -35,13 +36,7 @@ export function setupGroupHooks(GroupModel: typeof Group): void {
   // 保存前：验证数据合法性
   GroupModel.beforeSave(async (group) => {
     // 验证群容量范围
-    if (group.capacity < 2) {
-      throw new Error('群容量不能少于2人');
-    }
-
-    if (group.capacity > 5000) {
-      throw new Error('群容量不能超过5000人');
-    }
+    assertValid(numberInRange(group.capacity, 2, 5000, "群容量"));
 
     // 记录容量变更时间
     if (group.changed('capacity')) {

@@ -14,6 +14,12 @@ import { WS_ERROR_CODES } from "@/constants/ws/errors";
 import { Group, GroupMember, Conversation, ConversationMember, User } from "@/models";
 import { getLogger } from "@/tools/logging";
 import { uuid4 } from "@/utils/common/generate/uuid";
+import { 
+  wsRequireAuth, 
+  wsValidateRequired, 
+  wsHandleError, 
+  wsValidateCustom 
+} from "@/utils/validation/ws-validation";
 
 const logger = getLogger("ws:group");
 
@@ -22,19 +28,24 @@ const logger = getLogger("ws:group");
  * @description 处理创建群组
  */
 export async function handleCreate(socket: WebSocket, event: WsEvent): Promise<void> {
-  const userId = connectionManager.getUserIdBySocket(socket);
-  if (!userId) {
-    socket.send(JSON.stringify(createErrorEvent(WS_ERROR_CODES.UNAUTHORIZED, "Not authenticated", event.requestId)));
-    return;
-  }
+  const userId = wsRequireAuth(socket, event);
+  if (!userId) return;
 
   const data = event.data as any; // GroupCreateReqData
-  if (!data || !data.name || !data.memberIds || data.memberIds.length === 0) {
-    socket.send(JSON.stringify(createErrorEvent(WS_ERROR_CODES.INVALID_REQUEST, "name and memberIds are required", event.requestId)));
-    return;
-  }
+  if (!wsValidateRequired(socket, event, { 
+    name: data?.name, 
+    memberIds: data?.memberIds 
+  })) return;
 
-  try {
+  if (!wsValidateCustom(
+    socket,
+    event,
+    Array.isArray(data.memberIds) && data.memberIds.length > 0,
+    WS_ERROR_CODES.INVALID_REQUEST,
+    "memberIds must be a non-empty array"
+  )) return;
+
+  await wsHandleError(socket, event, async () => {
     const groupId = uuid4();
     const timestamp = Date.now();
 
@@ -113,10 +124,7 @@ export async function handleCreate(socket: WebSocket, event: WsEvent): Promise<v
     }
 
     logger.info("[WS] Group created", { groupId: group.id, ownerId: userId, memberCount: allMemberIds.length });
-  } catch (error: any) {
-    logger.error("[WS] Failed to create group", { error: error.message });
-    socket.send(JSON.stringify(createErrorEvent(WS_ERROR_CODES.INTERNAL_ERROR, error.message, event.requestId)));
-  }
+  });
 }
 
 /**
