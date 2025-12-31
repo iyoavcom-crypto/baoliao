@@ -36,6 +36,7 @@ import { Message, ConversationMember } from "@/models";
 import { getLogger } from "@/tools/logging";
 import { uuid4 } from "@/utils/common/generate/uuid";
 import { pushBadgeUpdateToMembers } from "./conversation.controller";
+import { Op } from "sequelize";
 
 const logger = getLogger("ws:message");
 
@@ -145,7 +146,6 @@ export async function handleSend(socket: WebSocket, event: WsEvent): Promise<voi
     }
 
     // 更新其他成员的未读数
-    const { Op } = require("sequelize");
     await ConversationMember.increment("unreadCount", {
       by: 1,
       where: {

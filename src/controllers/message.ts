@@ -10,6 +10,7 @@ import type { Request, Response } from "express";
 import { Message, ConversationMember, Conversation } from "@/models";
 import type { AuthRequest } from "@/middleware/auth/require";
 import { uuid4 } from "@/utils/common/generate/uuid";
+import { Op } from "sequelize";
 
 /**
  * @function sendMessage
@@ -117,7 +118,7 @@ export async function sendMessage(req: Request, res: Response): Promise<void> {
       by: 1,
       where: {
         conversationId,
-        userId: { [require("sequelize").Op.ne]: userId }
+        userId: { [Op.ne]: userId }
       }
     });
 
