@@ -22,3 +22,9 @@ export {
   runWithTraceId,
 } from './logging/index.js';
 export type { LogLevel, Logger, LogContext } from './logging/index.js';
+
+export {
+  formatErrorForLogging,
+  formatErrorForResponse,
+} from './error-formatter.js';
+export type { FormattedError } from './error-formatter.js';
